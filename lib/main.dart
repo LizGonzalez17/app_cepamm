@@ -1,3 +1,4 @@
+import 'package:app_cepamm/src/perfil/perfilusuario.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:app_cepamm/src/inicio/loginInicio.dart';
 import 'package:app_cepamm/src/login/login.dart';
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Logininicio(),
+      home: PerfilUsuario(),
     );
   }
 }
