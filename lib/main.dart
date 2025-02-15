@@ -1,3 +1,4 @@
+import 'package:app_cepamm/firebase_options.dart';
 import 'package:app_cepamm/src/perfil/perfilusuario.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:app_cepamm/src/inicio/loginInicio.dart';
@@ -5,7 +6,13 @@ import 'package:app_cepamm/src/login/login.dart';
 import 'package:flutter/material.dart';
 //import 'login.dart'; // Asegúrate de importar tu archivo con LoginScreen
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(
+    // name: 'division',
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(MyApp());
 }
 
@@ -18,7 +25,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: PerfilUsuario(),
+      home: Login(),
     );
   }
 }

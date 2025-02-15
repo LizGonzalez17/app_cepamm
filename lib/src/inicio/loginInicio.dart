@@ -1,7 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Logininicio extends StatefulWidget {
+  final String nombre;
+  const Logininicio(this.nombre, {super.key});
   @override
   State<Logininicio> createState() => _LogininicioState();
 }
@@ -63,7 +66,7 @@ class _LogininicioState extends State<Logininicio> {
                   Icon(Icons.menu, size: 30),
                   SizedBox(width: 10),
                   Text(
-                    "Hola, Lizbeth González",
+                    widget.nombre,
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ],

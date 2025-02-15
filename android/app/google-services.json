@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "791934098017",
+    "project_id": "cepamm-55a99",
+    "storage_bucket": "cepamm-55a99.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:791934098017:android:9aa45c9b32ff50a69f2820",
+        "android_client_info": {
+          "package_name": "com.example.app_cepamm"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDeX5VJU9ORDsfIpfPxPiSM3LdS3vDjBhk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

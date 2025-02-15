@@ -1,3 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class Login extends StatefulWidget {
@@ -6,6 +9,9 @@ class Login extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<Login> {
+  TextEditingController ctrolU = TextEditingController();
+  TextEditingController ctrolP = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,9 +54,9 @@ class _LoginScreenState extends State<Login> {
                 padding: const EdgeInsets.symmetric(horizontal: 30.0),
                 child: Column(
                   children: [
-                    buildTextField('Usuario:'),
+                    buildTextField('Usuario:', ctrolU),
                     SizedBox(height: 10),
-                    buildTextField('Contraseña:', obscureText: true),
+                    buildTextField('Contraseña:', ctrolP, obscureText: true),
                     SizedBox(height: 10),
                     // Botón "Iniciar sesión"
                     Container(
@@ -61,6 +67,7 @@ class _LoginScreenState extends State<Login> {
                       ),
                       child: TextButton(
                         onPressed: () {
+                          leer();
                           // Acción al presionar el botón
                         },
                         child: Text(
@@ -84,7 +91,8 @@ class _LoginScreenState extends State<Login> {
   }
 
   // Función para construir los TextField personalizados
-  Widget buildTextField(String label, {bool obscureText = false}) {
+  Widget buildTextField(String label, TextEditingController t,
+      {bool obscureText = false}) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 15),
       decoration: BoxDecoration(
@@ -93,6 +101,7 @@ class _LoginScreenState extends State<Login> {
       ),
       child: TextField(
         obscureText: obscureText,
+        controller: t,
         decoration: InputDecoration(
           border: InputBorder.none,
           labelText: label,
@@ -100,5 +109,20 @@ class _LoginScreenState extends State<Login> {
         ),
       ),
     );
+  }
+
+  void leer() async {
+    String usuario = ctrolU.text;
+    String pass = ctrolP.text;
+
+    FirebaseAuth auth = FirebaseAuth.instance;
+    auth.signInWithEmailAndPassword(email: usuario, password: pass);
+
+    CollectionReference col = FirebaseFirestore.instance.collection("paciente");
+    DocumentReference doc = col.doc(usuario);
+    print((await doc.get()).exists);
+    Map<String, dynamic> data =
+        (await doc.get()).data() as Map<String, dynamic>;
+    print(data);
   }
 }
