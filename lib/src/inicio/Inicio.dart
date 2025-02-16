@@ -2,14 +2,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Logininicio extends StatefulWidget {
-  final String nombre;
-  const Logininicio(this.nombre, {super.key});
+class Inicio extends StatefulWidget {
+  const Inicio({super.key});
   @override
-  State<Logininicio> createState() => _LogininicioState();
+  State<Inicio> createState() => _InicioState();
 }
 
-class _LogininicioState extends State<Logininicio> {
+class _InicioState extends State<Inicio> {
   final List<String> _imagenes = [
     'assets/imagen1.jpeg',
     'assets/imagen2.jpeg',
@@ -66,7 +65,7 @@ class _LogininicioState extends State<Logininicio> {
                   Icon(Icons.menu, size: 30),
                   SizedBox(width: 10),
                   Text(
-                    widget.nombre,
+                    '',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ],

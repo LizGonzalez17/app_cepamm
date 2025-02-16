@@ -1,3 +1,4 @@
+import 'package:app_cepamm/src/inicio/Inicio.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -11,7 +12,8 @@ class Login extends StatefulWidget {
 class _LoginScreenState extends State<Login> {
   TextEditingController ctrolU = TextEditingController();
   TextEditingController ctrolP = TextEditingController();
-
+  bool _isLoading = false;
+  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,8 +69,9 @@ class _LoginScreenState extends State<Login> {
                       ),
                       child: TextButton(
                         onPressed: () {
-                          leer();
+                          //leer();
                           // Acción al presionar el botón
+                          _iniciarSesion();
                         },
                         child: Text(
                           'Iniciar sesión',
@@ -124,5 +127,64 @@ class _LoginScreenState extends State<Login> {
     Map<String, dynamic> data =
         (await doc.get()).data() as Map<String, dynamic>;
     print(data);
+  }
+
+  Future<void> _iniciarSesion() async {
+    //if (!_formKey.currentState!.validate()) return;
+
+    setState(() => _isLoading = true);
+
+    try {
+      String username = ctrolU.text.trim();
+      String password = ctrolP.text.trim();
+
+      final userSnapshot = await FirebaseFirestore.instance
+          .collection('paciente')
+          .where('username', isEqualTo: username)
+          .limit(1)
+          .get();
+
+      if (userSnapshot.docs.isEmpty) {
+        throw FirebaseAuthException(
+            code: 'user-not-found', message: 'Usuario no encontrado.');
+      }
+
+      final userData = userSnapshot.docs.first.data();
+      String email = userData['email'] ?? "$username@example.com";
+
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => Inicio()),
+        );
+      }
+    } on FirebaseAuthException catch (e) {
+      _showError(e.code);
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  void _showError(String errorCode) {
+    String errorMessage;
+    switch (errorCode) {
+      case 'user-not-found':
+        errorMessage = 'No se encontró un usuario con este nombre.';
+        break;
+      case 'wrong-password':
+        errorMessage = 'La contraseña es incorrecta.';
+        break;
+      default:
+        errorMessage = 'Ocurrió un error inesperado.';
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(errorMessage)),
+    );
   }
 }
