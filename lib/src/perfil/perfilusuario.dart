@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class PerfilUsuario extends StatefulWidget {
+  const PerfilUsuario({super.key});
+
   @override
   _PerfilUsuarioState createState() => _PerfilUsuarioState();
 }
@@ -61,8 +63,9 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
   void getDataFromDatabase() {
     // Aquí puedes poner la lógica para obtener la URL de la imagen y el nombre desde tu base de datos
     setState(() {
-      imageUrl = "https://example.com/path/to/your/image.jpg"; // URL de ejemplo
-      name = "Juan Pérez"; // Nombre de ejemplo
+      imageUrl =
+          "https://blog.tohuman.dk/wp-content/uploads/2018/09/faceyoga-guide.jpg"; // URL de ejemplo
+      name = "Lizbeth González"; // Nombre de ejemplo
     });
   }
 

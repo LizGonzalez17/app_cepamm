@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:app_cepamm/src/perfil/perfilusuario.dart'; // Asegúrate de importar la pantalla
+import 'package:app_cepamm/src/login/login.dart'; // Asegúrate de importar la pantalla de Login
 
 class Inicio extends StatefulWidget {
   const Inicio({super.key});
@@ -27,10 +28,11 @@ class _InicioState extends State<Inicio> {
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(
-        viewportFraction: 0.6); // Aumenta el tamaño de las imágenes
+    _pageController = PageController(viewportFraction: 0.6);
 
-    _timer = Timer.periodic(Duration(seconds: 2), (Timer timer) {
+    // Cambiar la duración de la animación a más rápida
+    _timer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
+      // Reducir el intervalo de tiempo
       if (_currentPage < _imagenes.length - 1) {
         _currentPage++;
       } else {
@@ -38,7 +40,8 @@ class _InicioState extends State<Inicio> {
       }
       _pageController.animateToPage(
         _currentPage,
-        duration: Duration(milliseconds: 500),
+        duration: Duration(
+            milliseconds: 300), // Ajusta la duración a 300 ms para más rapidez
         curve: Curves.easeInOut,
       );
     });
@@ -49,6 +52,20 @@ class _InicioState extends State<Inicio> {
     _pageController.dispose();
     _timer?.cancel();
     super.dispose();
+  }
+
+  // Método para detectar el deslizamiento hacia la izquierda
+  void _onPageChanged(int index) {
+    if (index == 0) {
+      // Si se desliza hacia la izquierda hasta la primera imagen
+      // Navegar al login cuando se desliza hacia la izquierda
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                Login()), // Asegúrate de tener la pantalla de Login
+      );
+    }
   }
 
   @override
@@ -62,7 +79,17 @@ class _InicioState extends State<Inicio> {
             children: [
               Row(
                 children: [
-                  Icon(Icons.menu, size: 30),
+                  IconButton(
+                    icon: Icon(Icons.menu, size: 30),
+                    onPressed: () {
+                      // Navegar a la página de PerfilUsuario
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => PerfilUsuario()),
+                      );
+                    },
+                  ),
                   SizedBox(width: 10),
                   Text(
                     '',
@@ -101,21 +128,21 @@ class _InicioState extends State<Inicio> {
               ),
               SizedBox(height: 10),
               SizedBox(
-                height: 150, // Aumenta la altura del carrusel
+                height: 150,
                 child: PageView.builder(
                   controller: _pageController,
                   scrollDirection: Axis.horizontal,
                   itemCount: _imagenes.length,
+                  onPageChanged: _onPageChanged, // Detectar el cambio de página
                   itemBuilder: (context, index) {
                     return Padding(
                       padding: EdgeInsets.symmetric(horizontal: 8),
                       child: ClipRRect(
-                        borderRadius:
-                            BorderRadius.circular(15), // Bordes redondeados
+                        borderRadius: BorderRadius.circular(15),
                         child: Image.asset(
                           _imagenes[index],
-                          width: 150, // Aumenta el ancho de la imagen
-                          height: 150, // Aumenta la altura de la imagen
+                          width: 150,
+                          height: 150,
                           fit: BoxFit.cover,
                         ),
                       ),
