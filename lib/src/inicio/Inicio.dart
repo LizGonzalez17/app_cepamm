@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:app_cepamm/src/historial.dart';
 import 'package:app_cepamm/src/login/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -90,7 +91,50 @@ class _InicioState extends State<Inicio> {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
-            drawer: const Drawer(),
+            drawer: Drawer(
+              child: Container(
+                child: ListView(
+                  padding: EdgeInsets.zero,
+                  children: [
+                    UserAccountsDrawerHeader(
+                      accountName: Text(
+                        '${userData['username']}',
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      accountEmail: Text(
+                          '${userData['nombres']} ${userData['aPaterno']}  ${userData['aMaterno']}'),
+                      currentAccountPicture: CircleAvatar(
+                        backgroundColor: Colors.white,
+                        child: GestureDetector(
+                          child: ClipOval(
+                            child: userData['image_url'] != null &&
+                                    userData['image_url'].isNotEmpty
+                                ? Image.network(
+                                    userData['image_url'],
+                                    width: 90,
+                                    height: 90,
+                                    fit: BoxFit.cover,
+                                  )
+                                : Icon(Icons.person,
+                                    size: 50, color: Colors.grey[700]),
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Historial()));
+                          },
+                        ),
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.blue.shade800,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
             body: SafeArea(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
