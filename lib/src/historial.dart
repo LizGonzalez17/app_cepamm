@@ -19,25 +19,30 @@ class _HistorialState extends State<Historial> {
       return Login();
     }
 
-    return FutureBuilder<DocumentSnapshot>(
+    return FutureBuilder<QuerySnapshot>(
       future: FirebaseFirestore.instance
           .collection('paciente')
-          .doc(user?.uid)
+          .where('uid', isEqualTo: user?.uid)
+          .limit(1)
           .get(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(body: Center(child: CircularProgressIndicator()));
         }
-        if (snapshot.hasError || !snapshot.hasData || !snapshot.data!.exists) {
+        if (snapshot.hasError ||
+            !snapshot.hasData ||
+            snapshot.data!.docs.isEmpty) {
           return Scaffold(
               body: Center(child: Text('Error al cargar el perfil')));
         }
 
-        final userData = snapshot.data!.data() as Map<String, dynamic>;
+        final userData =
+            snapshot.data!.docs.first.data() as Map<String, dynamic>;
+        final consultas = userData['consultas'] as Map<String, dynamic>? ?? {};
 
         return Scaffold(
           appBar: AppBar(
-            title: Text('Perfil de ${userData['nombres']}'),
+            title: Text('Historial de ${userData['nombres']}'),
           ),
           body: Padding(
             padding: EdgeInsets.all(16),
@@ -71,38 +76,35 @@ class _HistorialState extends State<Historial> {
                     style: TextStyle(color: Colors.grey[600])),
 
                 SizedBox(height: 20),
+                Divider(),
+                Text('Historial Clínico',
+                    style:
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                SizedBox(height: 10),
 
-                // 📝 Botón para editar perfil
-                ListTile(
-                  leading: Icon(Icons.edit),
-                  title: Text("Editar perfil"),
-                  onTap: () {
-                    // Aquí puedes llevar a la pantalla de edición de perfil
-                  },
-                ),
-
-                // 🔑 Cambiar contraseña
-                ListTile(
-                  leading: Icon(Icons.lock),
-                  title: Text("Cambiar contraseña"),
-                  onTap: () {
-                    // Aquí puedes agregar la lógica para cambiar la contraseña
-                  },
-                ),
-
-                // 🚪 Cerrar sesión
-                ListTile(
-                  leading: Icon(Icons.exit_to_app, color: Colors.red),
-                  title: Text("Cerrar sesión",
-                      style: TextStyle(color: Colors.red)),
-                  onTap: () async {
-                    await FirebaseAuth.instance.signOut();
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => Login()),
-                      (route) => false,
-                    );
-                  },
+                Expanded(
+                  child: consultas.isNotEmpty
+                      ? ListView.builder(
+                          itemCount: consultas.length,
+                          itemBuilder: (context, index) {
+                            String key = consultas.keys.elementAt(index);
+                            var consulta = consultas[key];
+                            return Card(
+                              margin: EdgeInsets.symmetric(vertical: 8),
+                              child: ListTile(
+                                title: Text("Fecha:  09/02/2025"),
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text("Especialida: Dentista"),
+                                    Text("Tratamiento: Cambio de ligas"),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        )
+                      : Center(child: Text('No hay consultas registradas.')),
                 ),
               ],
             ),
